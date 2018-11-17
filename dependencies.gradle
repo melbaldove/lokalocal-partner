@@ -1,0 +1,154 @@
+ext {
+    // Android Framework
+    supportVersion = "28.0.0-rc02"
+    constraintLayoutVersion = "1.1.0"
+    multidexVersion = "1.0.3"
+    navigationComponentVersion = "1.0.0-alpha05"
+
+    // UI
+    circleImageViewVersion = "2.2.0"
+    imagePickerVersion = "1.13.1"
+    materialDialogsVersion = "0.9.6.0"
+
+    // Glide(Image Loading)
+    glideVersion = "4.7.1"
+    glideTransformationsVersion = "3.1.1"
+
+    // Firebase
+    firebaseCoreVersion = "16.0.4"
+    firebaseAuthVersion = "16.0.5"
+    crashlyticsVersion = "2.9.5"
+
+    // GooglePlay
+    googleAuthVersion = "16.0.1"
+    googleMapsVersion = "16.0.0"
+
+    // Network
+    okHttpVersion = "3.9.0"
+    retrofitVersion = "2.3.0"
+    loggingInterceptorVersion = "3.9.0"
+
+    // RIB
+    ribVersion = "0.9.1"
+
+    // ReactiveX
+    rxJavaVersion = "2.1.0"
+    rxAndroidVersion = "2.0.1"
+    rxKotlinVersion = "2.2.0"
+    rxPermissionsVersion = "0.9.5"
+    rxBindingVersion = "2.1.1"
+
+    // Dagger2 (DI Framework)
+    daggerVersion = "2.14.1"
+
+    // Kodein (DI Container)
+    kodeinVersion = "5.2.0"
+
+    // Timber
+    timberVersion = "4.7.1"
+
+    // Mvrx
+    mvrxVersion = "0.5.0"
+
+    // Social
+    fbSdkVersion = "4.34.0"
+
+    // Misc
+    javaxInjectVersion = '1'
+    gsonVersion = "2.8.5"
+    androidSaripaarVersion = "2.0.3"
+
+    libraries = [
+            kotlin                : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+
+            // Android Framework
+            appcompatv7           : "com.android.support:appcompat-v7:$supportVersion",
+            constraintLayout      : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+            design                : "com.android.support:design:$supportVersion",
+            multidex              : "com.android.support:multidex:$multidexVersion",
+            navigationFragment    : "android.arch.navigation:navigation-fragment-ktx:$navigationComponentVersion",
+            navigationUi          : "android.arch.navigation:navigation-ui-ktx:$navigationComponentVersion",
+
+            // UI
+            circleImageView       : "de.hdodenhof:circleimageview:$circleImageViewVersion",
+            imagePicker           : "com.github.esafirm.android-image-picker:imagepicker:$imagePickerVersion",
+            materialDialogs       : "com.afollestad.material-dialogs:commons:$materialDialogsVersion",
+
+            // Glide(Image Loading)
+            glide                 : "com.github.bumptech.glide:glide:$glideVersion",
+            glideCompiler         : "com.github.bumptech.glide:compiler:$glideVersion",
+            glideTransformations  : "jp.wasabeef:glide-transformations:$glideTransformationsVersion",
+
+            // Firebase
+            firebaseCore          : "com.google.firebase:firebase-core:$firebaseCoreVersion",
+            firebaseAuth          : "com.google.firebase:firebase-auth:$firebaseAuthVersion",
+            crashlytics           : "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion",
+
+            // Google Play
+            googleAuth            : "com.google.android.gms:play-services-auth:$googleAuthVersion",
+            googleMaps            : "com.google.android.gms:play-services-maps:$googleMapsVersion",
+            googlePlaces          : "com.google.android.gms:play-services-places:$googleMapsVersion",
+            googleLocation        : "com.google.android.gms:play-services-location:$googleMapsVersion",
+
+            // Network
+            retrofit              : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            retrofitAdapterRxJava : "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion",
+            retrofitConverterGson : "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+            loggingInterceptor    : "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion",
+            okHttp                : "com.squareup.okhttp3:okhttp:$okHttpVersion",
+
+            // Timber
+            timber                : "com.jakewharton.timber:timber:$timberVersion",
+
+            // RIB
+            rib                   : "com.uber.rib:rib-android:$ribVersion",
+            ribTest               : "com.uber.rib:rib-test-utils:$ribVersion",
+            ribCompiler           : "com.uber.rib:rib-compiler-test:$ribVersion",
+            ribScreenStackBase    : "com.uber.rib:rib-screen-stack-base:$ribVersion",
+
+            // ReactiveX
+            rxJava                : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
+            rxAndroid             : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
+            rxKotlin              : "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion",
+            rxPermissions         : "com.tbruyelle.rxpermissions2:rxpermissions:$rxPermissionsVersion@aar",
+            rxBinding             : "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion",
+
+            // Dagger2 (DI Framework)
+            daggerAndroid         : "com.google.dagger:dagger-android:$daggerVersion",
+            daggerAndroidSupport  : "com.google.dagger:dagger-android-support:$daggerVersion",
+            daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:$daggerVersion",
+            daggerCompiler        : "com.google.dagger:dagger-compiler:$daggerVersion",
+
+            // Kodein
+            kodein                : "org.kodein.di:kodein-di-generic-jvm:$kodeinVersion",
+            kodeinAndroidSupport  : "org.kodein.di:kodein-di-framework-android-support:$kodeinVersion",
+            // Mvrx
+            mvrx                  : "com.airbnb.android:mvrx:$mvrxVersion",
+
+            // Social
+            accountKit            : "com.facebook.android:account-kit-sdk:$fbSdkVersion",
+            fbSdk                 : "com.facebook.android:facebook-android-sdk:$fbSdkVersion",
+
+            // Misc
+            javaxInject           : "javax.inject:javax.inject:$javaxInjectVersion",
+            gson                  : "com.google.code.gson:gson:$gsonVersion",
+            androidSaripaar       : "com.mobsandgeeks:android-saripaar:$androidSaripaarVersion"
+    ]
+
+    junitVersion = "4.12"
+    runnerVersion = "1.0.2"
+    espressoCoreVersion = "3.0.2"
+    expectKtVersion = '1.0.0'
+    kotlinTestRunnerVersion = '3.1.8'
+    mockkVersion = '1.8.5'
+    hamcrestVersion = '1.3'
+    testLibraries = [
+            junit           : "junit:junit:$junitVersion",
+            runner          : "com.android.support.test:runner:$runnerVersion",
+            espressoCore    : "com.android.support.test.espresso:espresso-core:$espressoCoreVersion",
+            expectKt        : "com.nhaarman:expect.kt:$expectKtVersion",
+            hamcrestAll     : "org.hamcrest:hamcrest-all:$hamcrestVersion",
+            kotlinTestRunner: "io.kotlintest:kotlintest-runner-junit5:$kotlinTestRunnerVersion",
+            mockk           : "io.mockk:mockk:$mockkVersion"
+    ]
+}
