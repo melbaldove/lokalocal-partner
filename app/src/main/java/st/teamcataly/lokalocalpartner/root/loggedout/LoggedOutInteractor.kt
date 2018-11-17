@@ -13,8 +13,7 @@ import javax.inject.Inject
 @RibInteractor
 class LoggedOutInteractor : Interactor<LoggedOutInteractor.LoggedOutPresenter, LoggedOutRouter>() {
 
-  @Inject
-  lateinit var presenter: LoggedOutPresenter
+  @Inject lateinit var presenter: LoggedOutPresenter
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)

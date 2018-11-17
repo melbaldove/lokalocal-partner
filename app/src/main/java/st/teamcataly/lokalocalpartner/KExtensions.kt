@@ -1,6 +1,8 @@
 package st.teamcataly.lokalocalpartner
 
 import com.airbnb.epoxy.*
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
 /** Easily add models to an EpoxyRecyclerView, the same way you would in a buildModels method of EpoxyController. */
 fun EpoxyRecyclerView.withModels(buildModelsCallback: EpoxyController.() -> Unit) {
@@ -30,4 +32,8 @@ inline fun <T> CarouselModelBuilder.withModelsFrom(
         modelBuilder: (T) -> EpoxyModel<*>
 ) {
     models(items.map { modelBuilder(it) })
+}
+
+fun Disposable.addTo(disposables: CompositeDisposable) {
+    disposables.add(this)
 }

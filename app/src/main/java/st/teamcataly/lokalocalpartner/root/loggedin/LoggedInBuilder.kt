@@ -15,7 +15,9 @@ import st.teamcataly.lokalocalpartner.root.loggedin.orders.OrdersBuilder
 
 import java.lang.annotation.RetentionPolicy.CLASS
 import st.teamcataly.lokalocalpartner.root.RootView
-
+import st.teamcataly.lokalocalpartner.root.loggedin.neworder.NewOrderBuilder
+import st.teamcataly.lokalocalpartner.root.loggedin.neworder.NewOrderInteractor
+import st.teamcataly.lokalocalpartner.root.loggedin.orders.OrdersInteractor
 
 
 class LoggedInBuilder(dependency: ParentComponent) : Builder<LoggedInRouter, LoggedInBuilder.ParentComponent>(dependency) {
@@ -57,17 +59,29 @@ class LoggedInBuilder(dependency: ParentComponent) : Builder<LoggedInRouter, Log
             @Provides
             @JvmStatic
             internal fun router(component: Component, interactor: LoggedInInteractor, rootView: RootView): LoggedInRouter {
-                return LoggedInRouter(interactor, component, rootView, OrdersBuilder(component))
+                return LoggedInRouter(interactor, component, rootView, OrdersBuilder(component), NewOrderBuilder(component))
             }
 
-            // TODO: Create provider methods for dependencies created by this Rib. These methods should be static.
+            @LoggedInScope
+            @Provides
+            @JvmStatic
+            internal fun ordersListener(interactor: LoggedInInteractor): OrdersInteractor.Listener {
+                return interactor.OrdersListener()
+            }
+
+            @LoggedInScope
+            @Provides
+            @JvmStatic
+            internal fun newOrderListener(interactor: LoggedInInteractor): NewOrderInteractor.Listener {
+                return interactor.NewOrderListener()
+            }
         }
     }
 
 
     @LoggedInScope
     @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
-    interface Component : InteractorBaseComponent<LoggedInInteractor>, BuilderComponent, OrdersBuilder.ParentComponent {
+    interface Component : InteractorBaseComponent<LoggedInInteractor>, BuilderComponent, OrdersBuilder.ParentComponent, NewOrderBuilder.ParentComponent {
 
         @dagger.Component.Builder
         interface Builder {

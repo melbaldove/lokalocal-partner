@@ -17,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp">
 
-        <TextView
-            android:text="Number Of Orders: "
+        <Button
+            android:text="Back"
             android:fontFamily="@font/lato"
             android:layout_marginLeft="8dp"
             style="@style/TextAppearance.AppCompat.Body2"
@@ -51,4 +51,4 @@
     </LinearLayout>
 
 
-</st.teamcataly.lokalocalpartner.root.loggedin.orders.OrdersView>
+</st.teamcataly.lokalocalpartner.root.loggedin.checkout.CheckoutView>

@@ -70,6 +70,12 @@ dependencies {
     kapt libraries.epoxyProcessor
     implementation libraries.epoxyDataBinding
 
+    // ImageLoading
+    implementation libraries.picasso
+
+    // QR Scanner
+    implementation libraries.qrScanner
+
     implementation libraries.rxPermissions
     implementation libraries.gson
 }

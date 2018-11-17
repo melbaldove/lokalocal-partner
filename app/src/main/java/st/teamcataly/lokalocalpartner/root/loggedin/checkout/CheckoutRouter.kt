@@ -1,7 +1,5 @@
 package st.teamcataly.lokalocalpartner.root.loggedin.checkout
 
-import android.view.View
-
 import com.uber.rib.core.ViewRouter
 
 /**

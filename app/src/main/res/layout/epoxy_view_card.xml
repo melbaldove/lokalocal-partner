@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="name"
             type="String" />
@@ -13,6 +14,10 @@
         <variable
             name="isSelected"
             type="Boolean" />
+        <variable
+            name="onSelectListener"
+            type="android.view.View.OnClickListener"/>
+
     </data>
 
     <LinearLayout
@@ -28,6 +33,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/epoxy_view_card"
             app:cardCornerRadius="8dp"
+            android:onClick="@{onSelectListener}"
             android:layout_width="160dp"
             android:layout_height="96dp" >
 
@@ -36,12 +42,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <View
+                    android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
+                    android:background="@color/colorPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp" />
+
                 <TextView
                     android:text="@{name}"
                     tools:text="A-Ar Andrew Concepcion"
                     android:lines="2"
                     android:ellipsize="end"
                     style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_marginTop="4dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
