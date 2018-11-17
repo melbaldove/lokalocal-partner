@@ -1,4 +1,4 @@
-package st.teamcataly.lokalocalpartner.root
+package st.teamcataly.lokalocalpartner.root.loggedin.orders
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,39 +8,39 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import st.teamcataly.lokalocalpartner.R
-import st.teamcataly.lokalocalpartner.root.loggedin.LoggedInBuilder
-import st.teamcataly.lokalocalpartner.root.loggedout.LoggedOutBuilder
+import st.teamcataly.lokalocalpartner.root.loggedout.LoggedOutView
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
 import javax.inject.Scope
 
 /**
- * Builder for the {@link RootScope}.
+ * Builder for the {@link OrdersScope}.
  *
  * TODO describe this scope's responsibility as a whole.
  */
-class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRouter, RootBuilder.ParentComponent>(dependency) {
+class OrdersBuilder(dependency: ParentComponent) : ViewBuilder<OrdersView, OrdersRouter, OrdersBuilder.ParentComponent>(dependency) {
 
   /**
-   * Builds a new [RootRouter].
+   * Builds a new [OrdersRouter].
    *
    * @param parentViewGroup parent view group that this router's view will be added to.
-   * @return a new [RootRouter].
+   * @return a new [OrdersRouter].
    */
-  fun build(parentViewGroup: ViewGroup): RootRouter {
+  fun build(parentViewGroup: ViewGroup): OrdersRouter {
     val view = createView(parentViewGroup)
-    val interactor = RootInteractor()
-    val component = DaggerRootBuilder_Component.builder()
+    val interactor = OrdersInteractor()
+    val component = DaggerOrdersBuilder_Component.builder()
         .parentComponent(dependency)
         .view(view)
         .interactor(interactor)
         .build()
-    return component.rootRouter()
+    return component.ordersRouter()
   }
 
-  override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): RootView? {
-    return inflater.inflate(R.layout.root_rib, parentViewGroup, false) as RootView
+  override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): OrdersView? {
+    return inflater.inflate(R.layout.orders_rib, parentViewGroup, false) as OrdersView
+
   }
 
   interface ParentComponent {
@@ -50,38 +50,38 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
   @dagger.Module
   abstract class Module {
 
-    @RootScope
+    @OrdersScope
     @Binds
-    internal abstract fun presenter(view: RootView): RootInteractor.RootPresenter
+    internal abstract fun presenter(view: OrdersView): OrdersInteractor.OrdersPresenter
 
     @dagger.Module
     companion object {
 
-      @RootScope
+      @OrdersScope
       @Provides
       @JvmStatic
       internal fun router(
           component: Component,
-          view: RootView,
-          interactor: RootInteractor): RootRouter {
-        return RootRouter(view, interactor, component, LoggedOutBuilder(component), LoggedInBuilder(component))
+          view: OrdersView,
+          interactor: OrdersInteractor): OrdersRouter {
+        return OrdersRouter(view, interactor, component)
       }
     }
 
     // TODO: Create provider methods for dependencies created by this Rib. These should be static.
   }
 
-  @RootScope
+  @OrdersScope
   @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
-  interface Component : InteractorBaseComponent<RootInteractor>, BuilderComponent, LoggedOutBuilder.ParentComponent, LoggedInBuilder.ParentComponent {
+  interface Component : InteractorBaseComponent<OrdersInteractor>, BuilderComponent {
 
     @dagger.Component.Builder
     interface Builder {
       @BindsInstance
-      fun interactor(interactor: RootInteractor): Builder
+      fun interactor(interactor: OrdersInteractor): Builder
 
       @BindsInstance
-      fun view(view: RootView): Builder
+      fun view(view: OrdersView): Builder
 
       fun parentComponent(component: ParentComponent): Builder
       fun build(): Component
@@ -89,14 +89,14 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
   }
 
   interface BuilderComponent {
-    fun rootRouter(): RootRouter
+    fun ordersRouter(): OrdersRouter
   }
 
   @Scope
   @Retention(CLASS)
-  internal annotation class RootScope
+  internal annotation class OrdersScope
 
   @Qualifier
   @Retention(CLASS)
-  internal annotation class RootInternal
+  internal annotation class OrdersInternal
 }

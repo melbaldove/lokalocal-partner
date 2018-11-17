@@ -1,4 +1,4 @@
-package st.teamcataly.lokalocalpartner.root
+package st.teamcataly.lokalocalpartner.root.loggedin.orders
 
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
@@ -6,19 +6,20 @@ import com.uber.rib.core.RibInteractor
 import javax.inject.Inject
 
 /**
- * Coordinates Business Logic for [RootScope].
+ * Coordinates Business Logic for [OrdersScope].
  *
  * TODO describe the logic of this scope.
  */
 @RibInteractor
-class RootInteractor : Interactor<RootInteractor.RootPresenter, RootRouter>() {
+class OrdersInteractor : Interactor<OrdersInteractor.OrdersPresenter, OrdersRouter>() {
 
   @Inject
-  lateinit var presenter: RootPresenter
+  lateinit var presenter: OrdersPresenter
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
-    router.attachLoggedIn()
+
+    // TODO: Add attachment logic here (RxSubscriptions, etc.).
   }
 
   override fun willResignActive() {
@@ -30,5 +31,5 @@ class RootInteractor : Interactor<RootInteractor.RootPresenter, RootRouter>() {
   /**
    * Presenter interface implemented by this RIB's view.
    */
-  interface RootPresenter
+  interface OrdersPresenter
 }

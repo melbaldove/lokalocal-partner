@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View.OnClickListener"/>
+        <variable
+            name="name"
+            type="String" />
+
+        <variable
+            name="image"
+            type="String" />
+
+        <variable
+            name="quantity"
+            type="String" />
+
+        <variable
+            name="onIncrement"
+            type="OnClickListener" />
+
+        <variable
+            name="onDecrement"
+            type="OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?selectableItemBackground"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/epoxy_view_card"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            app:cardCornerRadius="8dp"
+            tools:layout_width="180dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:ellipsize="end"
+                    android:lines="2"
+                    app:layout_constraintBottom_toTopOf="@+id/item_name"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_new_order_24dp"
+                    tools:text="A-Ar Andrew Concepcion" />
+
+                <TextView
+                    android:id="@+id/item_name"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/lato"
+                    android:lines="2"
+                    android:padding="8dp"
+                    android:text="@{name}"
+                    app:layout_constraintBottom_toTopOf="@+id/quantity"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    tools:text="Mocha Latte ala Pobre" />
+
+
+                <ImageView
+                    android:id="@+id/decrement"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="8dp"
+                    android:onClick="@{onDecrement}"
+                    android:src="@drawable/ic_minus_box_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/quantity"
+                    tools:text="100"
+                    android:fontFamily="@font/lato"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="8dp"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:text="@{quantity}"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/decrement"
+                    app:layout_constraintRight_toLeftOf="@+id/increment" />
+
+                <ImageView
+                    android:id="@+id/increment"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="8dp"
+                    android:onClick="@{onIncrement}"
+                    android:src="@drawable/ic_add_box_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</layout>

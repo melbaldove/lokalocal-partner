@@ -25,16 +25,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled = true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libraries.appcompatv7
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    // Google
+    implementation libraries.design
 
     // Network
     implementation libraries.retrofit
@@ -54,6 +64,11 @@ dependencies {
     implementation libraries.daggerAndroidSupport
     kapt libraries.daggerAndroidProcessor
     kapt libraries.daggerCompiler
+
+    // Epoxy
+    implementation libraries.epoxy
+    kapt libraries.epoxyProcessor
+    implementation libraries.epoxyDataBinding
 
     implementation libraries.rxPermissions
     implementation libraries.gson
