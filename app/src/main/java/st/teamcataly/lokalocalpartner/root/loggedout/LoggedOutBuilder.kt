@@ -9,6 +9,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import st.teamcataly.lokalocalpartner.R
+import st.teamcataly.lokalocalpartner.root.LokaLocalApi
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
 import javax.inject.Qualifier
@@ -21,81 +22,82 @@ import javax.inject.Scope
  */
 class LoggedOutBuilder(dependency: ParentComponent) : ViewBuilder<LoggedOutView, LoggedOutRouter, LoggedOutBuilder.ParentComponent>(dependency) {
 
-  /**
-   * Builds a new [LoggedOutRouter].
-   *
-   * @param parentViewGroup parent view group that this router's view will be added to.
-   * @return a new [LoggedOutRouter].
-   */
-  fun build(parentViewGroup: ViewGroup): LoggedOutRouter {
-    val view = createView(parentViewGroup)
-    val interactor = LoggedOutInteractor()
-    val component = DaggerLoggedOutBuilder_Component.builder()
-        .parentComponent(dependency)
-        .view(view)
-        .interactor(interactor)
-        .build()
-    return component.loggedoutRouter()
-  }
+    /**
+     * Builds a new [LoggedOutRouter].
+     *
+     * @param parentViewGroup parent view group that this router's view will be added to.
+     * @return a new [LoggedOutRouter].
+     */
+    fun build(parentViewGroup: ViewGroup): LoggedOutRouter {
+        val view = createView(parentViewGroup)
+        val interactor = LoggedOutInteractor()
+        val component = DaggerLoggedOutBuilder_Component.builder()
+                .parentComponent(dependency)
+                .view(view)
+                .interactor(interactor)
+                .build()
+        return component.loggedoutRouter()
+    }
 
-  override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): LoggedOutView? {
-    return inflater.inflate(R.layout.logged_out_rib, parentViewGroup, false) as LoggedOutView
-  }
+    override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): LoggedOutView? {
+        return inflater.inflate(R.layout.logged_out_rib, parentViewGroup, false) as LoggedOutView
+    }
 
-  interface ParentComponent {
-    // TODO: Define dependencies required from your parent interactor here.
-  }
-
-  @dagger.Module
-  abstract class Module {
-
-    @LoggedOutScope
-    @Binds
-    internal abstract fun presenter(view: LoggedOutView): LoggedOutInteractor.LoggedOutPresenter
+    interface ParentComponent {
+        fun loggedOutListener(): LoggedOutInteractor.Listener
+        fun lokaLocalApi(): LokaLocalApi
+    }
 
     @dagger.Module
-    companion object {
+    abstract class Module {
 
-      @LoggedOutScope
-      @Provides
-      @JvmStatic
-      internal fun router(
-          component: Component,
-          view: LoggedOutView,
-          interactor: LoggedOutInteractor): LoggedOutRouter {
-        return LoggedOutRouter(view, interactor, component)
-      }
+        @LoggedOutScope
+        @Binds
+        internal abstract fun presenter(view: LoggedOutView): LoggedOutInteractor.LoggedOutPresenter
+
+        @dagger.Module
+        companion object {
+
+            @LoggedOutScope
+            @Provides
+            @JvmStatic
+            internal fun router(
+                    component: Component,
+                    view: LoggedOutView,
+                    interactor: LoggedOutInteractor): LoggedOutRouter {
+                return LoggedOutRouter(view, interactor, component)
+            }
+        }
+
+        // TODO: Create provider methods for dependencies created by this Rib. These should be static.
     }
 
-    // TODO: Create provider methods for dependencies created by this Rib. These should be static.
-  }
+    @LoggedOutScope
+    @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
+    interface Component : InteractorBaseComponent<LoggedOutInteractor>, BuilderComponent {
 
-  @LoggedOutScope
-  @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
-  interface Component : InteractorBaseComponent<LoggedOutInteractor>, BuilderComponent {
+        @dagger.Component.Builder
+        interface Builder {
+            @BindsInstance
+            fun interactor(interactor: LoggedOutInteractor): Builder
 
-    @dagger.Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun interactor(interactor: LoggedOutInteractor): Builder
+            @BindsInstance
+            fun view(view: LoggedOutView): Builder
 
-      @BindsInstance
-      fun view(view: LoggedOutView): Builder
-
-      fun parentComponent(component: ParentComponent): Builder
-      fun build(): Component
+            fun parentComponent(component: ParentComponent): Builder
+            fun build(): Component
+        }
     }
-  }
 
-  interface BuilderComponent {
-    fun loggedoutRouter(): LoggedOutRouter
-  }
+    interface BuilderComponent {
+        fun loggedoutRouter(): LoggedOutRouter
+    }
 
-  @Scope
-  @Retention(CLASS)
-  internal annotation class LoggedOutScope
+    @Scope
+    @Retention(CLASS)
+    internal annotation class LoggedOutScope
 
-  @Qualifier
-  @Retention(CLASS)
-  internal annotation class LoggedOutInternal
+    @Qualifier
+    @Retention(CLASS)
+    internal annotation class LoggedOutInternal
 }

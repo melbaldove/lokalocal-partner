@@ -4,8 +4,12 @@ import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import st.teamcataly.lokalocalpartner.addTo
+import st.teamcataly.lokalocalpartner.root.LokaLocalApi
+import st.teamcataly.lokalocalpartner.root.loggedin.Partner
 import st.teamcataly.lokalocalpartner.root.loggedin.Profile
 import javax.inject.Inject
 
@@ -19,8 +23,12 @@ class OrdersInteractor : Interactor<OrdersInteractor.OrdersPresenter, OrdersRout
 
     @Inject lateinit var presenter: OrdersPresenter
     @Inject lateinit var listener: Listener
+    @Inject lateinit var lokaLocalApi: LokaLocalApi
+
     private val disposables = CompositeDisposable()
+
     private var profileIdOrderMap: Map<String, Pair<Profile, Order>> = mapOf()
+    private var partner: Partner? = null
 
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
@@ -32,6 +40,35 @@ class OrdersInteractor : Interactor<OrdersInteractor.OrdersPresenter, OrdersRout
             listener.onOrdersUpdated(it)
         }.addTo(disposables)
         presenter.setOrders(profileIdOrderMap)
+        lokaLocalApi.getMenu(partner!!.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    presenter.loadMenu(it)
+                }, {
+
+                })
+                .addTo(disposables)
+
+        presenter.buyOrder().subscribe { order ->
+
+            processPurchase(order)
+        }
+    }
+
+    private fun processPurchase(order: Order) {
+        lokaLocalApi.buy(partner!!.id, order)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    profileIdOrderMap = profileIdOrderMap.filter { it.key != order.card }
+                    listener.onOrdersUpdated(profileIdOrderMap)
+                    presenter.setOrders(profileIdOrderMap)
+                    presenter.reload()
+                }, {
+
+                })
+                .addTo(disposables)
     }
 
     override fun willResignActive() {
@@ -52,9 +89,16 @@ class OrdersInteractor : Interactor<OrdersInteractor.OrdersPresenter, OrdersRout
         fun newOrder(): Observable<Unit>
         fun ordersUpdated(): Observable<Map<String, Pair<Profile, Order>>>
         fun setOrders(profileIdOrderMap: Map<String, Pair<Profile, Order>>)
+        fun loadMenu(coffeeItems: List<CoffeeItem>)
+        fun buyOrder(): Observable<Order>
+        fun reload()
     }
 
     fun setProfileIdOrderMap(profileIdOrderMap: Map<String, Pair<Profile, Order>>) {
         this@OrdersInteractor.profileIdOrderMap = profileIdOrderMap
+    }
+
+    fun setPartner(partner: Partner?) {
+        this@OrdersInteractor.partner = partner
     }
 }

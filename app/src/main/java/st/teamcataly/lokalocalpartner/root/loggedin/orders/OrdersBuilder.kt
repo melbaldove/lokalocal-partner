@@ -8,6 +8,8 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import st.teamcataly.lokalocalpartner.R
+import st.teamcataly.lokalocalpartner.root.LokaLocalApi
+import st.teamcataly.lokalocalpartner.root.loggedin.Partner
 import st.teamcataly.lokalocalpartner.root.loggedin.Profile
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.CLASS
@@ -27,9 +29,10 @@ class OrdersBuilder(dependency: ParentComponent) : ViewBuilder<OrdersView, Order
      * @param parentViewGroup parent view group that this router's view will be added to.
      * @return a new [OrdersRouter].
      */
-    fun build(parentViewGroup: ViewGroup, profileIdOrderMap: Map<String, Pair<Profile, Order>>): OrdersRouter {
+    fun build(parentViewGroup: ViewGroup, profileIdOrderMap: Map<String, Pair<Profile, Order>>, partner: Partner?): OrdersRouter {
         val view = createView(parentViewGroup)
         val interactor = OrdersInteractor()
+        interactor.setPartner(partner)
         interactor.setProfileIdOrderMap(profileIdOrderMap)
         val component = DaggerOrdersBuilder_Component.builder()
                 .parentComponent(dependency)
@@ -45,6 +48,7 @@ class OrdersBuilder(dependency: ParentComponent) : ViewBuilder<OrdersView, Order
     }
 
     interface ParentComponent {
+        fun lokaLocalApi(): LokaLocalApi
         fun ordersListener(): OrdersInteractor.Listener
     }
 

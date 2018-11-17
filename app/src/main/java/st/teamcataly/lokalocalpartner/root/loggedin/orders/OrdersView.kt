@@ -8,11 +8,8 @@ import st.teamcataly.lokalocalpartner.*
 import android.support.v7.widget.GridLayoutManager
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding2.view.RxView
-import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.epoxy_view_coffee.view.*
-import st.teamcataly.lokalocalpartner.databinding.EpoxyViewCoffeeBinding
 import st.teamcataly.lokalocalpartner.root.loggedin.Profile
 
 
@@ -28,19 +25,17 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     private var selectedProfileId = "-1"
     private var lastItemId = "-1"
     private var valueChange = 0
+
+    val menu = mutableListOf<CoffeeItem>()
+
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        val menu = listOf<CoffeeItem>(
-                CoffeeItem(id = "1", itemName = "Cafe ASDAs", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg"),
-                CoffeeItem(id = "2", itemName = "Cafe ASD", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg"),
-                CoffeeItem(id = "3", itemName = "CafeBSZX", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg"),
-                CoffeeItem(id = "4", itemName = "Cafe Latte Ala Pobre", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg"),
-                CoffeeItem(id = "5", itemName = "Cafe Latte Ala Pobre", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg"),
-                CoffeeItem(id = "6", itemName = "Cafe Latte Ala Pobre", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg"),
-                CoffeeItem(id = "7", itemName = "Cafe Latte Ala Pobre", itemImage = "https://tucsonfoodie.com/wp-content/uploads/2018/09/pexels-photo-302899-600x400.jpeg")
-        )
 
+        loadRecyclerView()
+    }
+
+    private fun loadRecyclerView() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
 
         orders_epoxy_rv.layoutManager = GridLayoutManager(context, 2)
@@ -49,7 +44,7 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             val list = profileIdOrderMap.map { it.value.first }
 
             profileIdOrderMap[selectedProfileId]?.second?.items?.forEach {
-                itemOrderQuantity[it.id] = it.quantity
+                itemOrderQuantity[it.itemId] = it.quantity
             }
 
             header {
@@ -88,7 +83,7 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                                     if (profile.id != selectedProfileId) {
                                         itemOrderQuantity.clear()
                                     }
-                                    selectedProfileId = profile.id
+                                    selectedProfileId = profile.id!!
                                     updateAllAndRebuild()
                                 }
                     }
@@ -109,7 +104,8 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                 coffee {
                     id(coffee.id)
                     name(coffee.itemName)
-                    image(coffee.itemImage)
+                    image(coffee.itemPath)
+                    price("${coffee.price} Credits")
                     quantity(itemOrderQuantity[coffee.id]?.toString() ?: "0")
                     spanSizeOverride { totalSpanCount, position, itemCount -> 1 }
 
@@ -149,27 +145,35 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         updateAllAndRebuild()
     }
 
+    override fun loadMenu(coffeeItems: List<CoffeeItem>) {
+        menu.addAll(coffeeItems)
+        updateAllAndRebuild()
+    }
+
     private fun updateNumberOfOrder() {
         val list = profileIdOrderMap.map { it.value.first }
         if (list.isNotEmpty()) {
             selectedProfileId = if (selectedProfileId == "-1") {
-                list.first().id
+                list.first().id!!
             } else {
                 selectedProfileId
             }
             profileIdOrderMap[selectedProfileId]?.second?.items?.forEach {
-                itemOrderQuantity[it.id] = it.quantity + if (lastItemId == it.id) {
+                itemOrderQuantity[it.itemId] = it.quantity + if (lastItemId == it.itemId) {
                     valueChange
                 } else {
                     0
                 }
 
-                if (lastItemId == it.id) {
+                if (lastItemId == it.itemId) {
                     valueChange = 0
                 }
             }
         }
         number_of_orders.text = itemOrderQuantity.map { it.value }.sum().toString()
+        total_price.text = itemOrderQuantity.map { item ->
+            (menu.find { coffeeItem -> coffeeItem.id == item.key }?.price ?: 0) * item.value
+        }.sum().toString() + " Credits"
     }
 
     private fun updateAllAndRebuild() {
@@ -178,14 +182,14 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
         if (selectedProfileId != "-1") {
             val updatedOrders = profileIdOrderMap.toMutableMap()
-            updatedOrders[selectedProfileId] = updatedOrders[selectedProfileId]!!.first to Order("", itemOrderQuantity.map {
+            updatedOrders[selectedProfileId] = updatedOrders[selectedProfileId]!!.first to Order(selectedProfileId, itemOrderQuantity.map {
                 Item(it.key, itemOrderQuantity[it.key] ?: 0)
             })
             ordersUpdateObservable.onNext(updatedOrders)
         }
     }
 
-    override fun newOrder() = addOrderClickObservable.hide().map {  }!!
+    override fun newOrder() = addOrderClickObservable.hide().map { }!!
 
     override fun setOrders(profileIdOrderMap: Map<String, Pair<Profile, Order>>) {
         this@OrdersView.profileIdOrderMap = profileIdOrderMap
@@ -193,4 +197,13 @@ class OrdersView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     }
 
     override fun ordersUpdated(): Observable<Map<String, Pair<Profile, Order>>> = ordersUpdateObservable
+
+    override fun buyOrder() = RxView.clicks(orders_checkout).map<Order>{
+        return@map profileIdOrderMap[selectedProfileId]?.second
+    }
+
+    override fun reload() {
+        selectedProfileId = "-1"
+        updateAllAndRebuild()
+    }
 }

@@ -10,6 +10,7 @@ import javax.inject.Scope
 
 import dagger.Provides
 import dagger.BindsInstance
+import st.teamcataly.lokalocalpartner.root.LokaLocalApi
 
 import st.teamcataly.lokalocalpartner.root.loggedin.orders.OrdersBuilder
 
@@ -27,8 +28,9 @@ class LoggedInBuilder(dependency: ParentComponent) : Builder<LoggedInRouter, Log
      *
      * @return a new [LoggedInRouter].
      */
-    fun build(): LoggedInRouter {
+    fun build(partner: Partner): LoggedInRouter {
         val interactor = LoggedInInteractor()
+        interactor.setPartner(partner)
         val component = DaggerLoggedInBuilder_Component.builder()
                 .parentComponent(dependency)
                 .interactor(interactor)
@@ -38,6 +40,7 @@ class LoggedInBuilder(dependency: ParentComponent) : Builder<LoggedInRouter, Log
     }
 
     interface ParentComponent {
+        fun lokaLocalApi(): LokaLocalApi
         fun rootView(): RootView
     }
 

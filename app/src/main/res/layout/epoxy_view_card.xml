@@ -17,7 +17,6 @@
         <variable
             name="onSelectListener"
             type="android.view.View.OnClickListener"/>
-
     </data>
 
     <LinearLayout

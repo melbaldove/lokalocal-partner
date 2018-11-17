@@ -23,8 +23,8 @@ class LoggedInRouter(
     private var ordersRouter: OrdersRouter? = null
     private var newOrderRouter: NewOrderRouter? = null
 
-    fun attachOrders(profileIdOrderMap: MutableMap<String, Pair<Profile, Order>>) {
-        ordersRouter = ordersBuilder.build(rootView, profileIdOrderMap)
+    fun attachOrders(profileIdOrderMap: MutableMap<String, Pair<Profile, Order>>, partner: Partner?) {
+        ordersRouter = ordersBuilder.build(rootView, profileIdOrderMap, partner)
         attachChild(ordersRouter)
         rootView.addView(ordersRouter?.view)
     }

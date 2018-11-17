@@ -1,13 +1,20 @@
 package st.teamcataly.lokalocalpartner.root.loggedin
 
+import com.google.gson.Gson
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.EmptyPresenter
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import st.teamcataly.lokalocalpartner.addTo
+import st.teamcataly.lokalocalpartner.root.LokaLocalApi
+import st.teamcataly.lokalocalpartner.root.loggedin.neworder.Credit
 import st.teamcataly.lokalocalpartner.root.loggedin.neworder.NewOrderInteractor
 import st.teamcataly.lokalocalpartner.root.loggedin.orders.Order
 import st.teamcataly.lokalocalpartner.root.loggedin.orders.OrdersInteractor
-import java.util.*
+import javax.inject.Inject
 
 /**
  * Coordinates Business Logic for [LoggedInScope].
@@ -17,11 +24,16 @@ import java.util.*
 @RibInteractor
 class LoggedInInteractor : Interactor<EmptyPresenter, LoggedInRouter>() {
 
+    @Inject lateinit var lokaLocalApi: LokaLocalApi
+
+    private var partner: Partner? = null
     val profiles = mutableListOf<Profile>()
     val profileIdOrderMap = mutableMapOf<String, Pair<Profile, Order>>()
+    val disposables = CompositeDisposable()
+
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
-        router.attachOrders(profileIdOrderMap)
+        router.attachOrders(profileIdOrderMap, partner)
     }
 
     override fun willResignActive() {
@@ -43,7 +55,7 @@ class LoggedInInteractor : Interactor<EmptyPresenter, LoggedInRouter>() {
     inner class NewOrderListener : NewOrderInteractor.Listener {
         override fun onBackClicked() {
             router.detachNewOrder()
-            router.attachOrders(profileIdOrderMap)
+            router.attachOrders(profileIdOrderMap, partner)
         }
 
         override fun onQRScanned(data: String) {
@@ -52,22 +64,50 @@ class LoggedInInteractor : Interactor<EmptyPresenter, LoggedInRouter>() {
     }
 
     fun processQr(qr: String) {
-//        val profile: Profile = Gson().fromJson(qr, Profile::class.java)
+        // {"creditId":"7666a7b9-66a5-450f-ba89-b4e19215d9c1"}
+        val credit = Gson().fromJson(qr, Credit::class.java)
+        val qrId = credit.creditId
 
-        val userId = UUID.randomUUID().toString()
-        val profile = Profile(id = userId, lastName = "Unregistered", firstName = "")
-        if (profiles.firstOrNull { it.id == userId } == null) {
-            profiles.add(profile)
-        }
 
-        val profileIdOrder = profileIdOrderMap[userId]
-        if (profileIdOrder == null) {
-            profileIdOrderMap[userId] = profile to Order("", listOf())
-        }
+        lokaLocalApi.getByQrId(qrId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val profile = it.copy(id = qrId)
+                    if (profiles.firstOrNull { it.id == qrId } == null) {
+                        profiles.add(profile)
+                    }
 
-        // do something
-        router.detachNewOrder()
-        router.attachOrders(profileIdOrderMap)
+                    val profileIdOrder = profileIdOrderMap[qrId]
+                    if (profileIdOrder == null) {
+                        profileIdOrderMap[qrId] = profile to Order(qrId, listOf())
+                    }
 
+                    // do something
+                    router.detachNewOrder()
+                    router.attachOrders(profileIdOrderMap, partner)
+                }, {
+                    var profile = Profile(id = qrId, lastName = "Unregistered", firstName = "")
+                    if (profiles.firstOrNull { it.id == qrId } == null) {
+                        profiles.add(profile)
+                    }
+
+                    val profileIdOrder = profileIdOrderMap[qrId]
+                    if (profileIdOrder == null) {
+                        profileIdOrderMap[qrId] = profile to Order(qrId, listOf())
+                    }
+
+                    // do something
+                    router.detachNewOrder()
+                    router.attachOrders(profileIdOrderMap, partner)
+                })
+                .addTo(disposables)
+
+
+
+    }
+
+    fun setPartner(partner: Partner) {
+        this@LoggedInInteractor.partner = partner
     }
 }

@@ -3,6 +3,7 @@ package st.teamcataly.lokalocalpartner.root
 import com.uber.rib.core.ViewRouter
 import st.teamcataly.lokalocalpartner.root.loggedin.LoggedInBuilder
 import st.teamcataly.lokalocalpartner.root.loggedin.LoggedInRouter
+import st.teamcataly.lokalocalpartner.root.loggedin.Partner
 import st.teamcataly.lokalocalpartner.root.loggedout.LoggedOutBuilder
 import st.teamcataly.lokalocalpartner.root.loggedout.LoggedOutRouter
 
@@ -37,8 +38,8 @@ class RootRouter(
         }
     }
 
-    fun attachLoggedIn() {
-        attachChild(loggedInBuilder.build())
+    fun attachLoggedIn(partner: Partner) {
+        attachChild(loggedInBuilder.build(partner))
     }
 
     fun detachLoggedIn() {

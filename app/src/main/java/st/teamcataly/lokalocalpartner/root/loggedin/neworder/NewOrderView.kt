@@ -29,7 +29,7 @@ class NewOrderView @JvmOverloads constructor(context: Context, attrs: AttributeS
         val codeScanner = CodeScanner(context, new_order_scanner_view)
 
         // Parameters (default values)
-        codeScanner.camera = CodeScanner.CAMERA_BACK // or CAMERA_FRONT or specific camera id
+        codeScanner.camera = CodeScanner.CAMERA_BACK // or CAMERA_FRONT or specific camera card
         codeScanner.formats = listOf(BarcodeFormat.QR_CODE) // list of type BarcodeFormat,
         // ex. listOf(BarcodeFormat.QR_CODE)
         codeScanner.autoFocusMode = AutoFocusMode.SAFE // or CONTINUOUS
@@ -53,7 +53,6 @@ class NewOrderView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         new_order_scanner_view.setOnClickListener {
             codeScanner.startPreview()
-            qrScanObservable.onNext("1")
         }
 
         codeScanner.startPreview()
