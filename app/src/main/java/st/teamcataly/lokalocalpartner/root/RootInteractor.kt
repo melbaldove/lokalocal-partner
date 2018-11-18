@@ -3,6 +3,8 @@ package st.teamcataly.lokalocalpartner.root
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
+import st.teamcataly.lokalocalpartner.root.loggedin.Partner
+import st.teamcataly.lokalocalpartner.root.loggedout.LoggedOutInteractor
 import javax.inject.Inject
 
 /**
@@ -13,23 +15,31 @@ import javax.inject.Inject
 @RibInteractor
 class RootInteractor : Interactor<RootInteractor.RootPresenter, RootRouter>() {
 
-  @Inject
-  lateinit var presenter: RootPresenter
+    @Inject
+    lateinit var presenter: RootPresenter
+    private var partner: Partner? = null
 
-  override fun didBecomeActive(savedInstanceState: Bundle?) {
-    super.didBecomeActive(savedInstanceState)
+    override fun didBecomeActive(savedInstanceState: Bundle?) {
+        super.didBecomeActive(savedInstanceState)
+        router.attachLoggedOut()
+    }
 
-    // TODO: Add attachment logic here (RxSubscriptions, etc.).
-  }
+    override fun willResignActive() {
+        super.willResignActive()
 
-  override fun willResignActive() {
-    super.willResignActive()
+        // TODO: Perform any required clean up here, or delete this method entirely if not needed.
+    }
 
-    // TODO: Perform any required clean up here, or delete this method entirely if not needed.
-  }
+    /**
+     * Presenter interface implemented by this RIB's view.
+     */
+    interface RootPresenter
 
-  /**
-   * Presenter interface implemented by this RIB's view.
-   */
-  interface RootPresenter
+    inner class LoggedOutListener : LoggedOutInteractor.Listener {
+        override fun onLoginSuccess(partner: Partner) {
+            this@RootInteractor.partner = partner
+            router.detachLoggedOut()
+            router.attachLoggedIn(partner)
+        }
+    }
 }

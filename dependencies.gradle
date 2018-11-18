@@ -1,6 +1,6 @@
 ext {
     // Android Framework
-    supportVersion = "28.0.0-rc02"
+    supportVersion = "28.0.0"
     constraintLayoutVersion = "1.1.0"
     multidexVersion = "1.0.3"
     navigationComponentVersion = "1.0.0-alpha05"
@@ -10,9 +10,10 @@ ext {
     imagePickerVersion = "1.13.1"
     materialDialogsVersion = "0.9.6.0"
 
-    // Glide(Image Loading)
+    // Image Loading
     glideVersion = "4.7.1"
     glideTransformationsVersion = "3.1.1"
+    picassoVersion = "2.71828"
 
     // Firebase
     firebaseCoreVersion = "16.0.4"
@@ -58,6 +59,12 @@ ext {
     gsonVersion = "2.8.5"
     androidSaripaarVersion = "2.0.3"
 
+    // Epoxy
+    epoxyVersion = "2.18.0"
+
+    // QR Scanner
+    qrScannerVersion = "1.9.4"
+
     libraries = [
             kotlin                : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
 
@@ -74,10 +81,8 @@ ext {
             imagePicker           : "com.github.esafirm.android-image-picker:imagepicker:$imagePickerVersion",
             materialDialogs       : "com.afollestad.material-dialogs:commons:$materialDialogsVersion",
 
-            // Glide(Image Loading)
-            glide                 : "com.github.bumptech.glide:glide:$glideVersion",
-            glideCompiler         : "com.github.bumptech.glide:compiler:$glideVersion",
-            glideTransformations  : "jp.wasabeef:glide-transformations:$glideTransformationsVersion",
+            // Image Loading
+            picasso               : "com.squareup.picasso:picasso:$picassoVersion",
 
             // Firebase
             firebaseCore          : "com.google.firebase:firebase-core:$firebaseCoreVersion",
@@ -132,7 +137,16 @@ ext {
             // Misc
             javaxInject           : "javax.inject:javax.inject:$javaxInjectVersion",
             gson                  : "com.google.code.gson:gson:$gsonVersion",
-            androidSaripaar       : "com.mobsandgeeks:android-saripaar:$androidSaripaarVersion"
+            androidSaripaar       : "com.mobsandgeeks:android-saripaar:$androidSaripaarVersion",
+
+            // Epoxy
+            epoxy                 : "com.airbnb.android:epoxy:$epoxyVersion",
+            epoxyProcessor        : "com.airbnb.android:epoxy-processor:$epoxyVersion",
+            epoxyDataBinding      : "com.airbnb.android:epoxy-databinding:$epoxyVersion",
+
+            // QR Scanner
+            qrScanner             : "com.budiyev.android:code-scanner:$qrScannerVersion"
+
     ]
 
     junitVersion = "4.12"
